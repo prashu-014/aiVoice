@@ -4,21 +4,15 @@ const { GoogleGenerativeAI } = require("@google/generative-ai");
 require("dotenv").config();
 const app = express();
 const port = 5000;
-const axios = require("axios");
-const { execFile } = require("child_process");
-const fs = require("fs");
-const path = require("path");
-const textToSpeech = require('@google-cloud/text-to-speech');
-const util = require('util');
-const client = new textToSpeech.TextToSpeechClient();
 
 app.use(cors());
 app.use(express.json());
 
 app.post("/aiResponse", async (req, res) => {
-  const { interimResult } = req.body;
+  const interimResult = req.body.message;
 
-  console.log("Received input from client:", interimResult);
+  console.log("Received input from client:", req.body.message);
+  console.log("Received input from mmm:", interimResult);
 
   if (!interimResult) {
     return res.status(400).json({ error: "No interim result provided" });
@@ -79,23 +73,9 @@ app.post("/aiResponse", async (req, res) => {
       throw new Error("Chat response is undefined or empty.");
     }
 
-    console.log(chatResponse);
-    
-
-    const audioUrl = await getVoice(chatResponse);
-
-    console.log("audio url ",audioUrl);
-    
-
-    
-    // const lipSyncData = await runRhubarbBase64(audioUrl);
-    // console.log(lipSyncData);
-    
-
     res.status(200).json({
       success: true,
       response: chatResponse,
-      // audio: audioUrl    
     });
   } catch (error) {
     console.error("Error generating AI response:", error.message);
@@ -107,86 +87,6 @@ app.post("/aiResponse", async (req, res) => {
     });
   }
 });
-
-// const getVoice = async (text) => {
-
-//   console.log("text....", text);
-  
-//   const options = {
-//     method: "POST",
-//     url: process.env.SPEECHIFY_URL,
-//     headers: {
-//       accept: "*/*",
-//       "content-type": "application/json",
-//       Authorization: `Bearer ${process.env.SPEECHIFY_API}`,
-//     },
-//     data: {
-//       audio_format: "wav",
-//       input: text,
-//       model: "simba-base",
-//       options: { loudness_normalization: true },
-//       voice_id: "Lisa",
-//     },
-//   };
-
-//   try {
-//     const response = await axios.request(options);
-//     // console.log("Audio generated:", response.data);
-//     return response.data;
-//   } catch (error) {
-//     console.error(
-//       "Error generating audio:",
-//       error.response?.data || error.message
-//     );
-//     throw new Error("Audio generation failed.");
-//   }
-// };
-
-
-// const saveBase64Audio = (base64Audio, outputPath) => {
-  
-//   const base64Data = base64Audio.replace(/^data:audio\/wav;base64,/, "");
-//   fs.writeFileSync(outputPath, base64Data, "base64");
-// };
-
-
-
-
-
-
-const runRhubarbBase64 = (audioBase64) => {
-
-  return new Promise((resolve, reject) => {
-    const rhubarbExecutable = "rhubarb"; // Ensure Rhubarb is installed and accessible in your PATH
-    const args = ["-o", "-", "--format", "json"]; // Output as JSON to stdout
-
-    // Decode base64 audio
-    let buffer;
-    try {
-      console.log("base64 text ....",audioBase64);
-      
-      buffer = Buffer.from(audioBase64, "base64");
-    } catch (error) {
-      return reject("Invalid base64 audio data.");
-    }
-
-    // Execute Rhubarb
-    const child = execFile(rhubarbExecutable, args, (error, stdout, stderr) => {
-      if (error) {
-        return reject(`Rhubarb execution failed: ${stderr || error.message}`);
-      }
-      resolve(stdout); // Resolve with JSON output
-    });
-
-    // Pass the audio buffer to Rhubarb's stdin
-    child.stdin.write(buffer);
-    child.stdin.end();
-  });
-};
-
-
-
-
 
 app.get("/", (req, res) => {
   res.send("Server is running successfully!");
