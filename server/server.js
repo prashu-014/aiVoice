@@ -5,7 +5,17 @@ require("dotenv").config();
 const app = express();
 const port = 5000;
 
-app.use(cors());
+
+const corsOptions ={
+  origin: process.env.FRONTEND_URL,
+  method:["GET","POST"],
+  allowHeaders:["Content-Type","Authorization"],
+
+}
+
+
+app.use(cors(corsOptions));
+
 app.use(express.json());
 
 app.post("/aiResponse", async (req, res) => {
