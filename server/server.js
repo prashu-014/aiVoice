@@ -3,7 +3,7 @@ const cors = require("cors");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 require("dotenv").config();
 const app = express();
-const port = 5000;
+const port = 5002;
 
 
 const corsOptions ={
