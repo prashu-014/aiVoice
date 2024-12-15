@@ -11,17 +11,13 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@google-cloud/text-to-speech": "^5.6.0",
     "@google/generative-ai": "^0.21.0",
     "axios": "^1.7.9",
-    "child_process": "^1.0.2",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "env": "^0.0.2",
     "express": "^4.21.1",
-    "fs": "^0.0.1-security",
-    "nodemon": "^3.1.7",
-    "socket.io": "^4.8.1",
-    "util": "^0.12.5"
+    "nodemon": "^3.1.7"
+    
   }
 }
