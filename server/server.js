@@ -18,7 +18,7 @@ app.use(cors(corsOptions));
 
 app.use(express.json());
 
-app.post("/aiResponse", async (req, res) => {
+app.post('/aiResponse', async (req, res) => {
   const interimResult = req.body.message;
 
   if (!interimResult) {
