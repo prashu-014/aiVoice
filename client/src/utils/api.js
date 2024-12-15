@@ -6,8 +6,12 @@ export const sendMessage = async (message, setAiResponse) => {
   const URL = import.meta.env.VITE_BACKEND_URL;
 
   try {
+<<<<<<< HEAD
     const response = await axios.post(`${URL}/aiResponse`, 
       {
+=======
+    const response = await axios.post("process.env.BACKEND_URI/aiResponse", {
+>>>>>>> f85c0d524b9b02637490863386d24960e13d5a95
       message,
     }
       );
