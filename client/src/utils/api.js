@@ -4,7 +4,7 @@ export const sendMessage = async (message, setAiResponse) => {
   if (!message) return;
 
   try {
-    const response = await axios.post("http://localhost:5000/aiResponse", {
+    const response = await axios.post("process.env.BACKEND_URI/aiResponse", {
       message,
     });
 
