@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import Avatar from "./components/Avatar/Avatar";
 import ToggleButton from "./components/ToggleButton";
 import useSpeechToText from "react-hook-speech-to-text";
 import AIResponse from "./components/AiResponse";
-import { sendMessage } from "./utils/api"; 
+import { sendMessage } from "./utils/api";
 
 function App() {
   const [aiResponse, setAiResponse] = useState("");
@@ -19,7 +19,7 @@ function App() {
     startSpeechToText,
     stopSpeechToText,
   } = useSpeechToText({
-    continuous: false,
+    continuous: true,
     useLegacyResults: false,
   });
 
@@ -42,11 +42,11 @@ function App() {
       utterance.voice = synth.getVoices()[2];
 
       utterance.onstart = () => {
-        setIsSpeaking(true);
+        // setIsSpeaking(true);
         stopSpeechToText();
       };
       utterance.onend = () => {
-        setIsSpeaking(false);
+        // setIsSpeaking(false);
         startSpeechToText();
       };
       synth.speak(utterance);

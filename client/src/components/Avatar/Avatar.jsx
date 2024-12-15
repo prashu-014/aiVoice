@@ -1,12 +1,16 @@
-import React from "react";
+import React, { Suspense, lazy } from "react";
 import { Canvas } from "@react-three/fiber";
-import AvatarContent from "./Content";
+import AvatarLoading from "../AvatarLoading";
+
+const AvatarContent = lazy(() => import("./Content"));
 
 const Avatar = () => {
   return (
-    <Canvas>
-      <AvatarContent />
-    </Canvas>
+    <Suspense fallback={<AvatarLoading />}>
+      <Canvas>
+        <AvatarContent />
+      </Canvas>
+    </Suspense>
   );
 };
 
