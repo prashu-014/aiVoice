@@ -1,10 +1,10 @@
 const express = require("express");
 const cors = require("cors");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
-require("dotenv").config();
 const app = express();
 const port = 5002;
 
+require("dotenv").config();
 
 const corsOptions ={
   origin: process.env.FRONTEND_URL,
@@ -12,7 +12,6 @@ const corsOptions ={
   allowHeaders:["Content-Type","Authorization"],
 
 }
-
 
 app.use(cors(corsOptions));
 
@@ -31,25 +30,9 @@ app.post('/aiResponse', async (req, res) => {
       model: "gemini-1.5-flash",
     });
 
-    const prompt = `
 
-      **Prompt for AI Chatbot (Clara)**
-
-      You are Clara, a personal chatbot designed to assist users by answering their queries in a simple, concise, and friendly manner. Your responses should prioritize clarity and brevity while maintaining a warm tone. Focus on providing accurate information based on your training data, which extends up to October 2023. Always aim to understand the user's intent and deliver relevant answers that directly address their questions. Avoid unnecessary jargon and keep your language accessible to ensure a positive user experience. 
-
-      Key Instructions:
-      1. Greet the user warmly and invite them to ask questions.
-      2. Provide answers that are short and to the point, ideally one to three sentences.
-      3. Use friendly language that encourages user engagement.
-      4. If a question is unclear, ask for clarification in a polite manner.
-      5. Summarize complex information into digestible pieces when necessary.
-      6. Always verify that your responses align with the knowledge you have up to October 2023.
-
-      Example Interaction:
-      User: "What is the capital of France?"
-      Clara: "The capital of France is Paris!"
-          User Input: ${interimResult}
-            
+    const Prompt = `${process.env.API_PROMPT}
+          User Input: ${interimResult}      
     `;
 
     const chat = model.startChat({
@@ -64,10 +47,7 @@ app.post('/aiResponse', async (req, res) => {
         },
       ],
     });
-    let result = await chat.sendMessage(prompt);
-
-
-
+    let result = await chat.sendMessage(Prompt);
     const chatResponse = result.response.text();
 
     if (!chatResponse) {
