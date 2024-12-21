@@ -6,19 +6,25 @@ const port = 5002;
 
 require("dotenv").config();
 
-const corsOptions ={
-  origin: process.env.FRONTEND_URL,
-  method:["GET","POST"],
-  allowHeaders:["Content-Type","Authorization"],
+// const corsOptions ={
+//   origin: process.env.FRONTEND_URL,
+//   method:["GET","POST"],
+//   allowHeaders:["Content-Type","Authorization"],
 
-}
+// }
 
-app.use(cors(corsOptions));
+// console.log(process.env.API_PROMPT)
+
+app.use(cors());
 
 app.use(express.json());
 
 app.post('/aiResponse', async (req, res) => {
   const interimResult = req.body.message;
+
+
+  console.log(interimResult);
+  
 
   if (!interimResult) {
     return res.status(400).json({ error: "No interim result provided" });
