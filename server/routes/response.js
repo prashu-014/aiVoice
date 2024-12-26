@@ -1,19 +1,10 @@
-const express = require("express");
-const cors = require("cors");
-const { GoogleGenerativeAI } = require("@google/generative-ai");
-const app = express();
-const port = 5002;
 
-require("dotenv").config();
-
-app.use(cors());
-app.use(express.json());
+// const routes = require('express')
 
 app.post('/aiResponse', async (req, res) => {
   const interimResult = req.body.message;
 
-  
-
+ 
   if (!interimResult) {
     return res.status(400).json({ error: "No interim result provided" });
   }
@@ -61,12 +52,4 @@ app.post('/aiResponse', async (req, res) => {
       error: error.message,
     });
   }
-});
-
-app.get("/", (req, res) => {
-  res.send("Server is running successfully!");
-});
-
-app.listen(port, () => {
-  console.log(`Server listening on http://localhost:${port}`);
 });
