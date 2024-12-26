@@ -9,6 +9,14 @@ require("dotenv").config();
 app.use(cors());
 app.use(express.json());
 
+const allowedOrigins = [process.env.ORIGIN];
+
+app.use(cors({
+  origin: allowedOrigins,
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Add the methods you use
+}));
+
+
 app.post('/aiResponse', async (req, res) => {
   const interimResult = req.body.message;
 
