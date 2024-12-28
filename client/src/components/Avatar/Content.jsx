@@ -4,7 +4,7 @@ import { OrbitControls, Environment, useAnimations, useFBX, useGLTF } from "@rea
 const AvatarContent = () => {
   const avatarRef = useRef();
 
-  
+
   const { scene } = useGLTF("/models/6743df4d75c188cf4dfb0dff.glb");
   const fbx = useFBX("/animation/Idle.fbx");
 
@@ -13,7 +13,7 @@ const AvatarContent = () => {
     console.error("No animation found in the FBX file.");
     return null;
   }
-  idleAnimation.name = "Idle"; 
+  idleAnimation.name = "Idle";
 
   const { actions, mixer } = useAnimations([idleAnimation], avatarRef);
 
@@ -27,12 +27,38 @@ const AvatarContent = () => {
     };
   }, [actions, mixer]);
 
+  useEffect(() => {
+    if (scene) {
+      scene.traverse((value) => {
+
+        
+        
+        if (value.name === "Wolf3D_Head" || value.name === "Wolf3D_Teeth"  ) {
+          if (value.morphTargetDictionary && value.morphTargetInfluences) {
+
+            
+            const visemeIndex = value.morphTargetDictionary["viseme_SS"];
+
+            if (visemeIndex !== undefined) {
+              value.morphTargetInfluences[visemeIndex] = 1;
+            } 
+
+          } 
+        }
+      });
+    } else {
+      console.log("Scene is not defined");
+    }
+  }, [scene]);
+
+ 
+
   return (
     <>
-      <OrbitControls />
+      <OrbitControls enableZoom={false} enablePan={false} minPolarAngle={Math.PI / 2.05} maxPolarAngle={Math.PI / 2.05}/>
       <Environment preset="sunset" />
       <ambientLight intensity={0.8} />
-      <primitive object={scene} scale={8} position={[0, -12.5, 2]} ref={avatarRef} />
+      <primitive object={scene} scale={8} position={[0, -12, 4]} ref={avatarRef} />
     </>
   );
 };

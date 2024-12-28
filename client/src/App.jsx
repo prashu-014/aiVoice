@@ -1,15 +1,16 @@
-import { Suspense, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Avatar from "./components/Avatar/Avatar";
-import ToggleButton from "./components/ToggleButton";
 import useSpeechToText from "react-hook-speech-to-text";
 import AIResponse from "./components/AiResponse";
 import { sendMessage } from "./utils/api";
+import NavButtons from "./components/ui/NavButtons";
+import VoiceStatus from "./components/ui/VoiceStatus";
 
 function App() {
   const [aiResponse, setAiResponse] = useState("");
   const synth = window.speechSynthesis;
   const [voices, setVoices] = useState([]);
-  const [isSpeaking, setIsSpeaking] = useState(false);
+  const [isBackground, setIsBackground] = useState("");
 
   const {
     error,
@@ -26,50 +27,74 @@ function App() {
   if (error) return <p>Web Speech API is not available in this browser 🤷‍</p>;
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      if (interimResult) {
-        console.log("text to sent server..." + interimResult);
+    const getVoices = () => {
+      const voicesList = synth.getVoices();
+      setVoices(voicesList);
+    };
 
-        sendMessage(interimResult, setAiResponse);
+    getVoices();
+    synth.onvoiceschanged = getVoices;
+  }, [synth]);
+
+  useEffect(() => {
+    const timer = setTimeout(async () => {
+      if (interimResult) {
+        try {
+          const response = await sendMessage(interimResult);
+          setAiResponse(response);
+        } catch (error) {
+          console.error("Error sending message:", error);
+        }
       }
     }, 800);
+
     return () => clearTimeout(timer);
   }, [interimResult]);
 
   useEffect(() => {
     if (aiResponse) {
       const utterance = new SpeechSynthesisUtterance(aiResponse);
-      utterance.voice = synth.getVoices()[2];
+
+      if (voices.length > 0) {
+        utterance.voice = voices[2] || voices[0];
+      }
 
       utterance.onstart = () => {
-        // setIsSpeaking(true);
         stopSpeechToText();
       };
+
       utterance.onend = () => {
-        // setIsSpeaking(false);
         startSpeechToText();
       };
+
       synth.speak(utterance);
+      setAiResponse("");
     }
   }, [aiResponse, voices, synth]);
 
   return (
-    <main className="h-screen bg-white grid grid-cols-1 grid-rows-2 xl:grid-rows-1 xl:grid-cols-5 gap-2 p-2">
-      <section className="relative border border-green-600 rounded-xl xl:col-span-2 bg-green-400 overflow-hidden">
+    <main className="h-screen bg-white grid grid-col-1 md:grid-cols-5 lg:grid-cols-12 gap-2 p-2">
+      <section
+        className={`relative md:h-full border rounded-md bg-green-400 md:col-span-3 lg:col-span-6`}
+        style={{ backgroundColor: isBackground }}
+      >
         <Avatar />
-        <ToggleButton
+
+        <VoiceStatus isRecording={isRecording} />
+        <NavButtons
           isRecording={isRecording}
           startSpeechToText={startSpeechToText}
           stopSpeechToText={stopSpeechToText}
+          setIsBackground={setIsBackground}
+          isBackground={isBackground}
         />
       </section>
-      <section className="xl:col-span-3 p-4">
-        <AIResponse
-          aiResponse={aiResponse}
-          results={results}
-          interimResult={interimResult}
-        />
-      </section>
+
+      <AIResponse
+        aiResponse={aiResponse}
+        results={results}
+        interimResult={interimResult}
+      />
     </main>
   );
 }

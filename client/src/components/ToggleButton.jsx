@@ -4,18 +4,17 @@ import { MdOutlineStopCircle } from "react-icons/md";
 
 const ToggleButton = ({ isRecording, stopSpeechToText, startSpeechToText }) => {
   return (
-    <div className="absolute top-3 left-2 flex gap-1 items-center rounded-md bg-white p-2 transition-all ease-in">
-      <button
-        onClick={isRecording ? stopSpeechToText : startSpeechToText}
-        className="p-1"
-      >
+    <div
+      className="flex gap-1 shadow-lg items-center  rounded-full transition-all ease-in "
+      onClick={isRecording ? stopSpeechToText : startSpeechToText}
+    >
+      <button className="p-1">
         {isRecording ? (
-          <MdOutlineStopCircle className="text-2xl text-red-600" />
+          <MdOutlineStopCircle className="text-4xl md:text-5xl text-red-500" />
         ) : (
-          <FaRegCirclePlay className="text-2xl text-green-800" />
+          <FaRegCirclePlay className="text-4xl md:text-5xl text-green-800  " />
         )}
       </button>
-      <h1>{isRecording ? "Listening..." : "Start"}</h1>
     </div>
   );
 };

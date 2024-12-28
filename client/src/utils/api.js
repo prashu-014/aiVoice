@@ -1,22 +1,19 @@
 import axios from "axios";
 
-export const sendMessage = async (message, setAiResponse) => {
+export const sendMessage = async (message) => {
   if (!message) return;
 
   const URL = import.meta.env.VITE_BACKEND_URL;
-  
+
   try {
-    const response = await axios.post(`${URL}/aiResponse`, { 
-      message, 
+    const response = await axios.post(`${URL}/aiResponse`, {
+      message,
     });
 
     if (response.data.success) {
-      setAiResponse(response.data.response); 
-    } else {
-      setAiResponse("Failed to generate AI response."); 
+      return response.data.response;
     }
   } catch (error) {
-    console.error("Error:", error);
-    setAiResponse("Failed to fetch AI response."); 
+    alert("Error:", error)
   }
 };

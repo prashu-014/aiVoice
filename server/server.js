@@ -2,25 +2,20 @@ const express = require("express");
 const cors = require("cors");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const app = express();
-const port = 5002;
+
+const port = process.env.PORT | 5002;
 
 require("dotenv").config();
-
-app.use(cors());
 app.use(express.json());
-
-const allowedOrigins = [process.env.ORIGIN];
-
 app.use(cors({
-  origin: allowedOrigins,
-  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Add the methods you use
+  origin: process.env.FRONTEND_URL,
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true, 
 }));
 
 
 app.post('/aiResponse', async (req, res) => {
   const interimResult = req.body.message;
-
-  
 
   if (!interimResult) {
     return res.status(400).json({ error: "No interim result provided" });
