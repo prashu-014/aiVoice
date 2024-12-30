@@ -7,7 +7,7 @@
  
 # Project Overview
 
-# Tech Stack
+  Tech Stack
   Frontend: React.js, Three.js, Web Speech API
   Backend: Node.js, Express.js, Gemini AI
 
@@ -23,7 +23,6 @@
 
 # Solution
   A scalable solution featuring:
-
   A dynamic 3D avatar for user engagement.
   Real-time interaction powered by Gemini AI.
   Customization options to enhance usability and personalization.
