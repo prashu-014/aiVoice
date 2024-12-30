@@ -19,7 +19,7 @@
 
 
 # Problem Statement
-  Traditional AI assistants often lack engaging visuals and immersive interaction. This project aims to bridge that gap by combining visual and conversational AI features for a richer user experience.
+  Traditional AI assistants often lack engaging visuals and immersive interaction. This project   aims to bridge that gap by combining visual and conversational AI features for a richer user    experience.
 
 # Solution
   A scalable solution featuring:
@@ -31,4 +31,8 @@
   Lip-sync animations for realistic speech.
   Multi-modal interaction (gestures, text input, and visuals).
   Advanced customization and emotion recognition.
+
+# ScreenShots
+![image (3)](https://github.com/user-attachments/assets/9f511800-a581-4dda-87e4-db40c01aeb81)
+![image (4)](https://github.com/user-attachments/assets/93b1fb63-78c6-4950-9032-fd1987751e06)
 
