@@ -7,10 +7,11 @@ import NavButtons from "./components/ui/NavButtons";
 import VoiceStatus from "./components/ui/VoiceStatus";
 
 function App() {
-  const [aiResponse, setAiResponse] = useState("");
+  const [aiResponse, setAiResponse] = useState([{ name: "", status: false }]);
   const synth = window.speechSynthesis;
   const [voices, setVoices] = useState([]);
   const [isBackground, setIsBackground] = useState("");
+  const [IsmouthChar, setIsMouthChar] = useState([]);
 
   const {
     error,
@@ -41,7 +42,10 @@ function App() {
       if (interimResult) {
         try {
           const response = await sendMessage(interimResult);
-          setAiResponse(response);
+          setAiResponse((prevResponses) => [
+            ...prevResponses,
+            { name: response.response },
+          ]);
         } catch (error) {
           console.error("Error sending message:", error);
         }
@@ -52,33 +56,50 @@ function App() {
   }, [interimResult]);
 
   useEffect(() => {
-    if (aiResponse) {
-      const utterance = new SpeechSynthesisUtterance(aiResponse);
+    if (aiResponse && Array.isArray(aiResponse)) {
+      aiResponse.forEach((response, index) => {
+        if (response.name !== "" && !response.status) {
+          const utterance = new SpeechSynthesisUtterance(response.name);
+          setAiResponse((prev) =>
+            prev.map((item, i) =>
+              i === index ? { ...item, status: true } : item
+            )
+          );
 
-      if (voices.length > 0) {
-        utterance.voice = voices[2] || voices[0];
-      }
+          if (voices.length > 0) {
+            utterance.voice = voices[2] || voices[0];
+          }
 
-      utterance.onstart = () => {
-        stopSpeechToText();
-      };
+          utterance.onstart = () => {
+            stopSpeechToText();
+          };
 
-      utterance.onend = () => {
-        startSpeechToText();
-      };
+          utterance.onend = () => {
+            startSpeechToText();    
+          };
 
-      synth.speak(utterance);
-      setAiResponse("");
+          synth.speak(utterance);
+          const character = response.name.split("");
+            const uppercaseLetters = character
+            .filter(
+              (char) =>
+                (char >= "A" && char <= "H") || (char >= "a" && char <= "H" || (char == "X" && char == "x"))
+            )
+            .map((char) => char.toUpperCase());
+
+          setIsMouthChar(uppercaseLetters)
+        }
+      });
     }
-  }, [aiResponse, voices, synth]);
+  }, [aiResponse, voices, synth,IsmouthChar]);
 
   return (
-    <main className="h-screen bg-white grid grid-col-1 md:grid-cols-5 lg:grid-cols-12 gap-2 p-2">
+    <main className="min-h-screen bg-white grid grid-col-1  ld:grid-rows-1 lg:grid-cols-5 xl:grid-cols-12 gap-2 p-2">
       <section
-        className={`relative md:h-full border rounded-md bg-green-400 md:col-span-3 lg:col-span-6`}
+        className={`relative   row-span-3  border rounded-md bg-green-400 lg:col-span-3 xl:col-span-6`}
         style={{ backgroundColor: isBackground }}
       >
-        <Avatar />
+        <Avatar IsmouthChar={IsmouthChar}  stopSpeechToText={stopSpeechToText} />
 
         <VoiceStatus isRecording={isRecording} />
         <NavButtons

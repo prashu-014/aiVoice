@@ -11,7 +11,7 @@ const NavButtons = ({
   startSpeechToText,
   stopSpeechToText,
   setIsBackground,
-  isBackground,
+  isBackground, 
 }) => {
   return (
     <div className="absolute bottom-1 left-1/2 -translate-x-1/2 bg-white z-20 flex gap-4 items-center justify-center px-4 py-1 md:px-10 rounded-full shadow-lg">

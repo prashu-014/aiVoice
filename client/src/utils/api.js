@@ -11,7 +11,7 @@ export const sendMessage = async (message) => {
     });
 
     if (response.data.success) {
-      return response.data.response;
+      return response.data;
     }
   } catch (error) {
     alert("Error:", error)
