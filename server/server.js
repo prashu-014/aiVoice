@@ -3,15 +3,17 @@ const cors = require("cors");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const app = express();
 
-const port = process.env.PORT | 5002;
+const port = process.env.PORT_NODE;
 
 require("dotenv").config();
 app.use(express.json());
-app.use(cors({
-  origin: process.env.FRONTEND_URL,
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  credentials: true, 
-}));
+// app.use(cors({
+//   origin: process.env.FRONTEND_URL,
+//   methods: ['GET', 'POST', 'PUT', 'DELETE'],
+//   credentials: true, 
+// }));
+
+app.use(cors())
 
 
 app.post('/aiResponse', async (req, res) => {
@@ -45,15 +47,16 @@ app.post('/aiResponse', async (req, res) => {
       ],
     });
     let result = await chat.sendMessage(Prompt);
-    const chatResponse = result.response.text();
+    const rawText = result.response.candidates[0].content.parts[0].text;
+    const extractedJson = JSON.parse(rawText.replace(/```json|```/g, ''));
 
-    if (!chatResponse) {
+    if (!extractedJson) {
       throw new Error("Chat response is undefined or empty.");
     }
 
     res.status(200).json({
       success: true,
-      response: chatResponse,
+      response: extractedJson,
     });
   } catch (error) {
     console.error("Error generating AI response:", error.message);

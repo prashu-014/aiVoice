@@ -17,26 +17,26 @@ function AIResponse({ aiResponse, results, interimResult }) {
   }
 
   return (
-    <section className="row-span-2 p-2 lg:col-span-2 xl:col-span-6">
-      <h2 className="text-lg font-bold">Chat:</h2>
-      <div className="bg-gray-100 text-black p-2 rounded overflow-y-auto max-h-[400px]">
+    <section className="px-2  lg:col-span-2 xl:col-span-6 overflow-y-scroll">
+      <h2 className="text-lg font-bold pb-2 sticky top-0 ps-2 md:ps-0 text-white">Chat:</h2>
+      <div className=" text-black p-2 rounded">
         <ul>
           {conversation.map((item, index) => (
             <li
               key={index}
-              className={`p-2 my-2 rounded w-fit max-w-xs ${
+              className={`p-2 my-2 rounded w-fit bg-zinc-700 text-zinc-300 max-w-xs ${
                 item.type === "user"
-                  ? "bg-blue-300 text-left"
+                  ? "text-left"
                   : item.type === "ai"
-                  ? "bg-green-300 text-left ml-auto"
-                  : "bg-blue-300 text-left"
+                  ? "text-left ml-auto"
+                  : "text-left"
               }`}
             >
               <span className="font-bold text-sm block">
                 {item.type === "user"
                   ? "You:"
                   : item.type === "ai"
-                  ? "AI:"
+                  ? "Clara:"
                   : "You (typing...):"}
               </span>
               {item.text}

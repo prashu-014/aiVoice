@@ -4,10 +4,7 @@ import AvatarLoading from "../AvatarLoading";
 
 const AvatarContent = lazy(() => import("./Content"));
 
-const Avatar = ({IsmouthChar,stopSpeechToText}) => {
-
-  console.log(IsmouthChar);
-  
+const Avatar = ({ Ismouthviseme, stopSpeechToText}) => {
   return (
     <Suspense fallback={<AvatarLoading />}>
       <Canvas style={{
@@ -19,8 +16,8 @@ const Avatar = ({IsmouthChar,stopSpeechToText}) => {
         zIndex: "1",
         pointerEvents:'none'
       }}
-      camera={{ position: [-0.5, 1, 10], fov: 45 }}>
-        <AvatarContent  IsmouthChar={IsmouthChar} stopSpeechToText={stopSpeechToText}/>
+        camera={{ position: [-0.5, 1, 10], fov: 45 }}>
+        <AvatarContent Ismouthviseme={Ismouthviseme} stopSpeechToText={stopSpeechToText}/>
       </Canvas>
     </Suspense>
   );

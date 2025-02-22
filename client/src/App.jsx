@@ -11,7 +11,7 @@ function App() {
   const synth = window.speechSynthesis;
   const [voices, setVoices] = useState([]);
   const [isBackground, setIsBackground] = useState("");
-  const [IsmouthChar, setIsMouthChar] = useState([]);
+  const [Ismouthviseme, setIsMouthviseme] = useState([]);
 
   const {
     error,
@@ -44,7 +44,7 @@ function App() {
           const response = await sendMessage(interimResult);
           setAiResponse((prevResponses) => [
             ...prevResponses,
-            { name: response.response },
+            { name: response.response.answer },
           ]);
         } catch (error) {
           console.error("Error sending message:", error);
@@ -69,38 +69,55 @@ function App() {
           if (voices.length > 0) {
             utterance.voice = voices[2] || voices[0];
           }
+          let startTime = performance.now();
 
           utterance.onstart = () => {
             stopSpeechToText();
+            startTime = performance.now(); 
           };
 
           utterance.onend = () => {
             startSpeechToText();    
+            setIsMouthviseme([]);
+          };
+  
+          utterance.onboundary = (event) => {
+            let endTime = performance.now();
+            let audioDuration = (endTime - startTime) / 1000; 
+  
+            const visemeText = response.name.toUpperCase();
+  
+            const visemePattern = /[ABCEFGHX]/g;
+            const matches = visemeText.match(visemePattern) || [];
+  
+            const numCharacters = Math.max(matches.length, 1); 
+            let timePerChar = Math.max(audioDuration / numCharacters, 0.25); 
+  
+            let stateArray = [];
+            let currentTime = 0;
+  
+            matches.forEach((viseme) => {
+              let endTime = currentTime + timePerChar;
+              stateArray.push({ start: currentTime, end: endTime, value: viseme });
+              currentTime = endTime;
+            });
+  
+            setIsMouthviseme(stateArray);
           };
 
           synth.speak(utterance);
-          const character = response.name.split("");
-            const uppercaseLetters = character
-            .filter(
-              (char) =>
-                (char >= "A" && char <= "H") || (char >= "a" && char <= "H" || (char == "X" && char == "x"))
-            )
-            .map((char) => char.toUpperCase());
-
-          setIsMouthChar(uppercaseLetters)
         }
       });
     }
-  }, [aiResponse, voices, synth,IsmouthChar]);
+  }, [aiResponse, voices, synth]);
 
   return (
-    <main className="min-h-screen bg-white grid grid-col-1  ld:grid-rows-1 lg:grid-cols-5 xl:grid-cols-12 gap-2 p-2">
+    <main className="h-screen px-2 pt-2 bg-white grid grid-cols-1 grid-rows-2 lg:grid-rows-1 xl:grid-rows-1 lg:grid-cols-5 xl:grid-cols-12 gap-2 overflow-hidden" style={{ background: 'url(/background/background.jpg)',backgroundPosition:'center', backgroundSize:'cover' ,backgroundRepeat:'no-repeat'}}>
       <section
-        className={`relative   row-span-3  border rounded-md bg-green-400 lg:col-span-3 xl:col-span-6`}
-        style={{ backgroundColor: isBackground }}
-      >
-        <Avatar IsmouthChar={IsmouthChar}  stopSpeechToText={stopSpeechToText} />
-
+        className={`relative  rounded-md lg:col-span-3 xl:col-span-6 w-full h-full`}
+        
+        >
+        <Avatar stopSpeechToText={stopSpeechToText} Ismouthviseme={Ismouthviseme} />
         <VoiceStatus isRecording={isRecording} />
         <NavButtons
           isRecording={isRecording}

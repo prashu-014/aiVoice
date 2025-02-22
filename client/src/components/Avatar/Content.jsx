@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef, useState } from "react";
 import {
   OrbitControls,
@@ -9,38 +10,31 @@ import {
 import { useFrame } from "@react-three/fiber";
 import { MathUtils } from "three";
 
-const AvatarContent = ({ IsmouthChar, stopSpeechToText }) => {
+const AvatarContent = ({Ismouthviseme}) => {
   const avatarRef = useRef();
   const [isBlink, setIsBlink] = useState(false);
-
   const { scene } = useGLTF("/models/6743df4d75c188cf4dfb0dff.glb");
-  const fbx = useFBX("/animation/Idle.fbx");
-
-  const idleAnimation = fbx.animations[0];
-  if (!idleAnimation) {
-    console.error("No animation found in the FBX file.");
-    return null;
-  }
-  idleAnimation.name = "Idle";
-
-  const { actions, mixer } = useAnimations([idleAnimation], avatarRef);
+  const animationTime = useRef(0);
+  const idleAnimation = useFBX("/animation/Idle.fbx"); 
+  const { animations } = idleAnimation;
+  const { actions, mixer } = useAnimations(animations, scene);
 
   useEffect(() => {
-    if (actions?.Idle) {
-      actions.Idle.reset().play();
+    if (scene && animations.length > 0) {
+      scene.animations = animations; 
     }
 
-    return () => {
-      if (mixer) mixer.stopAllAction();
-    };
-  }, [actions, mixer]);
+    if (actions && actions[animations[0]?.name]) {
+      actions[animations[0].name].reset().fadeIn(0.5).play(); 
+    }
+
+  }, [scene, animations, actions]);
 
   const corresponding = {
     A: "viseme_PP",
     B: "viseme_kk",
     C: "viseme_I",
-    D: "viseme_AA",
-    E: "viseme_0",
+    E: "viseme_O",
     F: "viseme_U",
     G: "viseme_FF",
     H: "viseme_TH",
@@ -68,26 +62,50 @@ const AvatarContent = ({ IsmouthChar, stopSpeechToText }) => {
     });
   };
 
-  useFrame(() => {
-    lerpMorphTarget("eyeBlinkLeft", isBlink ? 1 : 0, 0.7);
-    lerpMorphTarget("eyeBlinkRight", isBlink ? 1 : 0, 0.7);
-
-    lerpMorphTarget("mouthSmileLeft", 0.2, 0.7);
-    lerpMorphTarget("mouthSmileRight", 0.2, 0.7);
-  });
-
   useEffect(() => {
     let blinkTimeout;
     const nextBlink = () => {
       setIsBlink(true);
-      setTimeout(() => {
-        setIsBlink(false);
-      }, 100);
-      blinkTimeout = setTimeout(nextBlink, 3000 + Math.random() * 2000); // Randomize next blink
+      setTimeout(() => setIsBlink(false), 100);
+      blinkTimeout = setTimeout(nextBlink, 3000 + Math.random() * 2000);
     };
     nextBlink();
     return () => clearTimeout(blinkTimeout);
   }, []);
+
+  useFrame((_, delta) => {
+    
+    Object.values(corresponding).forEach((value) => {
+      lerpMorphTarget(value, 0, 0.2);
+    });
+
+    if(Ismouthviseme.length > 1)
+    {
+    animationTime.current += delta;
+  
+    const mouthCue = Ismouthviseme.find(
+      (cue) => animationTime.current >= cue.start && animationTime.current <= cue.end
+    );
+    
+
+      if (mouthCue) {
+        const viseme = corresponding[mouthCue.value];
+        if (viseme) {
+          lerpMorphTarget(viseme, 1, 0.2);
+          console.log("work",viseme);
+          
+        }
+      }
+    }
+    else {
+      animationTime.current = 0;
+    }
+
+    lerpMorphTarget("eyeBlinkLeft", isBlink ? 1 : 0, 0.7);
+    lerpMorphTarget("eyeBlinkRight", isBlink ? 1 : 0, 0.7);
+    lerpMorphTarget("mouthSmileLeft", 0.2, 0.7);
+    lerpMorphTarget("mouthSmileRight", 0.2, 0.7);   
+  });
 
   return (
     <>
