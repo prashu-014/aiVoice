@@ -7,13 +7,12 @@ const port = process.env.PORT_NODE;
 
 require("dotenv").config();
 app.use(express.json());
-// app.use(cors({
-//   origin: process.env.FRONTEND_URL,
-//   methods: ['GET', 'POST', 'PUT', 'DELETE'],
-//   credentials: true, 
-// }));
+app.use(cors({
+  origin: process.env.FRONTEND_URL,
+  methods: ['GET', 'POST'],
+  credentials: true, 
+}));
 
-app.use(cors())
 
 
 app.post('/aiResponse', async (req, res) => {
