@@ -3,17 +3,17 @@ const cors = require("cors");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const app = express();
 
-const port = process.env.PORT_NODE;
 
 require("dotenv").config();
 app.use(express.json());
 app.use(cors({
-  origin: process.env.FRONTEND_URL,
+  origin: process.env.FRONTEND_URL || "*",
   methods: ['GET', 'POST'],
   credentials: true, 
 }));
 
 
+const port = process.env.PORT_NODE;
 
 app.post('/aiResponse', async (req, res) => {
   const interimResult = req.body.message;

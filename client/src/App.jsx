@@ -112,7 +112,7 @@ function App() {
   }, [aiResponse, voices, synth]);
 
   return (
-    <main className="h-screen px-2 pt-2 bg-white grid grid-cols-1 grid-rows-2 lg:grid-rows-1 xl:grid-rows-1 lg:grid-cols-5 xl:grid-cols-12 gap-2 overflow-hidden" style={{ background: 'url(/background/background.jpg)',backgroundPosition:'center', backgroundSize:'cover' ,backgroundRepeat:'no-repeat'}}>
+    <main className="h-svh px-2 pt-2 bg-white grid grid-cols-1 grid-rows-2 lg:grid-rows-1 xl:grid-rows-1 lg:grid-cols-5 xl:grid-cols-12 gap-2 overflow-hidden" style={{ background: 'url(/background/background.jpg)',backgroundPosition:'center', backgroundSize:'cover' ,backgroundRepeat:'no-repeat'}}>
       <section
         className={`relative  rounded-md lg:col-span-3 xl:col-span-6 w-full h-full`}
         
