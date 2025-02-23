@@ -25,9 +25,9 @@ This project is an AI-powered Voice Assistant combining Gemini AI for real-time 
 
 - **Body Animation:** Smooth and realistic movements for a lifelike experience.
 
-- **Eye Blinking:** Natural blinking to enhance realism.
+- **:eyes: Blinking:** Natural blinking to enhance realism.
 
-- **Lips Movement:** Syncs lip movements with speech for a more immersive interaction.
+- **:lips: Movement:** Syncs lip movements with speech for a more immersive interaction.
 
 **Text-to-Speech (TTS) Web API:** Converts chat responses into speech for a more immersive interaction.
 
